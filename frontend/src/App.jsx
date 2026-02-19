@@ -10,6 +10,8 @@ import { AIGreeting } from './components/AIGreeting';
 import { InjuryConfirmation } from './components/InjuryConfirmation';
 import { PreExerciseBriefing } from './components/PreExerciseBriefing';
 import { NutritionAdvice } from './components/NutritionAdvice';
+import { ProfileDropdown } from './components/ProfileDropdown';
+import { ProfileModal } from './components/ProfileModal';
 import { useStore } from './store/useStore';
 import { EXERCISES } from './utils/exerciseDetectors';
 import { getRecommendedExercises } from './utils/injuryMapping';
@@ -19,7 +21,11 @@ function App() {
   const [flow, setFlow] = useState('landing');
   const [showBriefing, setShowBriefing] = useState(false);
   const [showNutrition, setShowNutrition] = useState(false);
+<<<<<<< HEAD
   const [recommendedExercises, setRecommendedExercises] = useState([]);
+=======
+  const [showProfile, setShowProfile] = useState(false);
+>>>>>>> 5d3e620 (Dashboard Updates)
 
   useEffect(() => {
     if (!user) {
@@ -42,9 +48,14 @@ function App() {
     setFlow('dashboard');
   };
 
+<<<<<<< HEAD
   const handleSkipInjury = () => {
     setInjury(null);
     setFlow('dashboard');
+=======
+  const handleSaveProfile = (profileData) => {
+    setUser({ ...user, ...profileData });
+>>>>>>> 5d3e620 (Dashboard Updates)
   };
 
   if (flow === 'landing') {
@@ -73,13 +84,24 @@ function App() {
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
-              Ortho<span className="text-[#00e5ff]">Vita</span>
-            </h1>
-            <p className="text-[#4a5e80] text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              AI-POWERED REHABILITATION • DAY {rehabDay}
-            </p>
+          <div className="flex items-center gap-4">
+            <ProfileDropdown 
+              user={user} 
+              onOpenProfile={() => setShowProfile(true)}
+              onSignOut={() => { 
+                setUser(null); 
+                setInjury(null);
+                setFlow('landing');
+              }}
+            />
+            <div>
+              <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
+                Ortho<span className="text-[#00e5ff]">Vita</span>
+              </h1>
+              <p className="text-[#4a5e80] text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                AI-POWERED REHABILITATION • DAY {rehabDay}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -96,17 +118,6 @@ function App() {
                 <p className="text-xs text-[#4a5e80]">{confirmedInjury}</p>
               )}
             </div>
-            <button
-              onClick={() => { 
-                setUser(null); 
-                setInjury(null);
-                setFlow('landing');
-              }}
-              className="text-sm border border-[#1c2e50] text-[#4a5e80] px-4 py-2 rounded-xl
-                hover:border-red-500/50 hover:text-red-400 transition-all duration-200"
-            >
-              Sign Out
-            </button>
           </div>
         </div>
 
@@ -173,6 +184,14 @@ function App() {
           injury={confirmedInjury}
           effortLevel="moderate"
           onClose={() => setShowNutrition(false)}
+        />
+      )}
+
+      {showProfile && (
+        <ProfileModal 
+          user={user} 
+          onClose={() => setShowProfile(false)}
+          onSave={handleSaveProfile}
         />
       )}
     </div>
