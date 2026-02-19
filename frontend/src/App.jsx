@@ -21,11 +21,8 @@ function App() {
   const [flow, setFlow] = useState('landing');
   const [showBriefing, setShowBriefing] = useState(false);
   const [showNutrition, setShowNutrition] = useState(false);
-<<<<<<< HEAD
   const [recommendedExercises, setRecommendedExercises] = useState([]);
-=======
   const [showProfile, setShowProfile] = useState(false);
->>>>>>> 5d3e620 (Dashboard Updates)
 
   useEffect(() => {
     if (!user) {
@@ -48,14 +45,13 @@ function App() {
     setFlow('dashboard');
   };
 
-<<<<<<< HEAD
   const handleSkipInjury = () => {
     setInjury(null);
     setFlow('dashboard');
-=======
+  };
+
   const handleSaveProfile = (profileData) => {
     setUser({ ...user, ...profileData });
->>>>>>> 5d3e620 (Dashboard Updates)
   };
 
   if (flow === 'landing') {
