@@ -13,7 +13,10 @@ export const ExerciseHistory = ({ onClose }) => {
   const downloadHistory = () => {
     const data = [
       ['Date', 'Exercise', 'Reps', 'Accuracy (%)', 'Duration (seconds)', 'Day', 'Time'],
-      ...sessionHistory.map(session => [
+      ...sessionHistory
+      .slice()
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map(session => [
         session.date || getDateFromTimestamp(session.timestamp),
         EXERCISES[session.exercise]?.name || session.exercise,
         session.reps,
@@ -53,7 +56,7 @@ export const ExerciseHistory = ({ onClose }) => {
     sessionHistory.forEach(session => {
       const date = session.date || getDateFromTimestamp(session.timestamp);
       if (!grouped[date]) grouped[date] = { sessions: [], day: session.day || 1 };
-      grouped[date].sessions.push(session);
+      grouped[date].sessions.unshift(session);
     });
     return grouped;
   };
