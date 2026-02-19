@@ -80,6 +80,40 @@ export const useVoiceCoach = () => {
 // Hindi translations for common phrases
 const translateToHindi = (text) => {
   const translations = {
+    // Squat feedback - NEW
+    '✓ Good depth! Stand up': '✓ अच्छी गहराई! खड़े हो जाएं',
+    '✓ Rep counted!': '✓ गिना गया!',
+    'Squat down': 'स्क्वाट करें',
+    'Stand up fully': 'पूरा खड़े हो जाएं',
+    
+    // Bicep Curl feedback - NEW
+    '✓ Good curl! Lower down': '✓ अच्छा कर्ल! नीचे करें',
+    'Extend arm fully': 'हाथ पूरा फैलाएं',
+    
+    // Knee Raise feedback - NEW
+    '✓ Good height! Lower leg': '✓ अच्छी ऊंचाई! पैर नीचे करें',
+    'Raise your knee': 'घुटना उठाएं',
+    'Lower leg completely': 'पैर पूरा नीचे करें',
+    
+    // Shoulder Press feedback - NEW
+    'Press arms overhead': 'हाथ सिर के ऊपर दबाएं',
+    'Lower to shoulders': 'कंधों तक नीचे करें',
+    
+    // Lateral Raise feedback - NEW
+    '✓ Good raise! Lower slowly': '✓ अच्छा उठाव! धीरे नीचे करें',
+    'Raise arms to sides': 'हाथ बगल में उठाएं',
+    'Lower arms down': 'हाथ नीचे करें',
+    
+    // Lunge feedback - NEW
+    '✓ Good lunge! Stand up': '✓ अच्छा लंज! खड़े हो जाएं',
+    'Lunge down': 'लंज करें',
+    'Stand up': 'खड़े हो जाएं',
+    
+    // Calf Raise feedback - NEW
+    '✓ Good raise! Lower heels': '✓ अच्छा उठाव! एड़ी नीचे करें',
+    'Rise on toes': 'पंजों पर उठें',
+    'Lower heels': 'एड़ी नीचे करें',
+    
     // Squat feedback
     'Stand ready': 'तैयार खड़े रहें',
     '✓ Perfect depth! Now stand up': '✓ बिल्कुल सही गहराई! अब खड़े हो जाएं',

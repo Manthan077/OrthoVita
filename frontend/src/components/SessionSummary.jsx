@@ -22,7 +22,7 @@ export const SessionSummary = () => {
     ? Math.round(sessionData.reduce((sum, d) => sum + d.accuracy, 0) / sessionData.length)
     : 0;
 
-  const chartData = sessionData.map((d, i) => ({ rep: i + 1, accuracy: d.accuracy }));
+  const chartData = sessionData.map((d) => ({ rep: d.rep, accuracy: d.accuracy }));
 
   const grade = avgAccuracy >= 90 ? { label: 'Excellent', color: '#00ff9d' }
     : avgAccuracy >= 75 ? { label: 'Good', color: '#00e5ff' }
@@ -139,48 +139,77 @@ Be encouraging and specific.`;
       </div>
 
       {chartData.length > 1 && (
-        <div>
-          <h3 className="text-sm font-semibold text-[#4a5e80] mb-4"
+        <div className="bg-[#060b14] border border-[#1c2e50] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-[#00e5ff] mb-4 flex items-center gap-2"
             style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            <span className="w-1 h-4 bg-[#00e5ff] rounded-full" />
             ACCURACY PER REP
           </h3>
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1c2e50" />
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <defs>
+                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#00e5ff" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#00ff9d" stopOpacity={0.8} />
+                </linearGradient>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#00e5ff" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#00e5ff" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1c2e50" vertical={false} />
               <XAxis
                 dataKey="rep"
-                stroke="#1c2e50"
-                tick={{ fill: '#4a5e80', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                label={{ value: 'Rep', position: 'insideBottom', offset: -2, fill: '#4a5e80', fontSize: 11 }}
+                stroke="#2d3f5c"
+                tick={{ fill: '#6b7fa8', fontSize: 12, fontFamily: 'JetBrains Mono' }}
+                label={{ value: 'Rep Number', position: 'insideBottom', offset: -5, fill: '#4a5e80', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+                axisLine={{ stroke: '#2d3f5c' }}
               />
               <YAxis
                 domain={[0, 100]}
-                stroke="#1c2e50"
-                tick={{ fill: '#4a5e80', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                label={{ value: 'Accuracy %', angle: -90, position: 'insideLeft', fill: '#4a5e80', fontSize: 11 }}
+                stroke="#2d3f5c"
+                tick={{ fill: '#6b7fa8', fontSize: 12, fontFamily: 'JetBrains Mono' }}
+                label={{ value: 'Accuracy (%)', angle: -90, position: 'insideLeft', fill: '#4a5e80', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+                axisLine={{ stroke: '#2d3f5c' }}
               />
               <Tooltip
                 contentStyle={{
-                  background: '#111e35',
-                  border: '1px solid #1c2e50',
-                  borderRadius: 10,
+                  background: 'rgba(6, 11, 20, 0.95)',
+                  border: '1px solid #00e5ff',
+                  borderRadius: 12,
                   color: '#e8f0ff',
                   fontFamily: 'JetBrains Mono',
-                  fontSize: 12
+                  fontSize: 13,
+                  padding: '8px 12px',
+                  boxShadow: '0 0 20px rgba(0, 229, 255, 0.2)'
                 }}
                 formatter={(v) => [`${v}%`, 'Accuracy']}
                 labelFormatter={(v) => `Rep ${v}`}
+                cursor={{ stroke: '#00e5ff', strokeWidth: 1, strokeDasharray: '5 5' }}
               />
               <Line
                 type="monotone"
                 dataKey="accuracy"
-                stroke="#00e5ff"
-                strokeWidth={2}
-                dot={{ fill: '#00e5ff', r: 3 }}
-                activeDot={{ r: 5, fill: '#00ff9d' }}
+                stroke="url(#lineGradient)"
+                strokeWidth={3}
+                dot={{ fill: '#00e5ff', r: 4, strokeWidth: 2, stroke: '#060b14' }}
+                activeDot={{ r: 6, fill: '#00ff9d', stroke: '#060b14', strokeWidth: 2 }}
+                animationDuration={1000}
               />
             </LineChart>
           </ResponsiveContainer>
+          
+          {/* Legend */}
+          <div className="flex items-center justify-center gap-4 mt-4 text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#00e5ff]" />
+              <span className="text-[#6b7fa8]">Accuracy Trend</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#00ff9d]" />
+              <span className="text-[#6b7fa8]">Target: 80%+</span>
+            </div>
+          </div>
         </div>
       )}
     </div>

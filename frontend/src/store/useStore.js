@@ -89,8 +89,15 @@ export const useStore = create(
       }),
       
       updateStats: (reps, accuracy, feedback, angle) => set((state) => {
-        const newSessionData = [...state.sessionData, { reps, accuracy, angle: angle || 0, timestamp: Date.now() }];
-        const avgAccuracy = Math.round(newSessionData.reduce((sum, d) => sum + d.accuracy, 0) / newSessionData.length);
+        // Only add to sessionData when rep count increases
+        let newSessionData = state.sessionData;
+        if (reps > state.reps) {
+          newSessionData = [...state.sessionData, { rep: reps, accuracy, angle: angle || 0, timestamp: Date.now() }];
+        }
+        
+        const avgAccuracy = newSessionData.length > 0
+          ? Math.round(newSessionData.reduce((sum, d) => sum + d.accuracy, 0) / newSessionData.length)
+          : accuracy;
         
         return {
           reps,
