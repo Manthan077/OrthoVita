@@ -97,7 +97,11 @@ function App() {
               )}
             </div>
             <button
-              onClick={() => { setUser(null); setInjury(null); }}
+              onClick={() => { 
+                setUser(null); 
+                setInjury(null);
+                setFlow('landing');
+              }}
               className="text-sm border border-[#1c2e50] text-[#4a5e80] px-4 py-2 rounded-xl
                 hover:border-red-500/50 hover:text-red-400 transition-all duration-200"
             >

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { signUp, login } from '../utils/auth';
 
 const FEATURES = [
   {
@@ -260,23 +261,28 @@ function AuthModal({ mode, onSwitchMode, onClose, onAuth }) {
 
   function update(field, val) { setForm((f) => ({ ...f, [field]: val })); setError(''); }
 
-  function validate() {
-    if (!isLogin && !form.name.trim()) return 'Please enter your full name.';
-    if (!form.email.includes('@'))     return 'Enter a valid email address.';
-    if (form.password.length < 6)      return 'Password must be at least 6 characters.';
-    return '';
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
-    const err = validate();
-    if (err) { setError(err); return; }
+    setError('');
     setLoading(true);
-    // Replace this setTimeout with your real API call later
+
     setTimeout(() => {
+      let result;
+      
+      if (isLogin) {
+        result = login(form.email, form.password);
+      } else {
+        result = signUp(form.name, form.email, form.password);
+      }
+
       setLoading(false);
-      onAuth({ name: form.name || form.email.split('@')[0], email: form.email });
-    }, 800);
+
+      if (result.success) {
+        onAuth(result.user);
+      } else {
+        setError(result.error);
+      }
+    }, 400);
   }
 
   const inputClass = `w-full bg-white/[0.04] border border-white/[0.09] text-white text-sm
