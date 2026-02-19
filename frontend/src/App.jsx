@@ -27,6 +27,7 @@ function App() {
   const [recommendedExercises, setRecommendedExercises] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [injurySkipped, setInjurySkipped] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -48,6 +49,7 @@ function App() {
   const handleInjurySelect = (injuryData) => {
     setInjury(injuryData.injury);
     setRecommendedExercises(injuryData.exercises);
+    setInjurySkipped(false);
   };
 
   const handleInjuryConfirm = (injuryData) => {
@@ -131,11 +133,33 @@ function App() {
         </div>
 
         {/* Injury Assessment */}
-        {!confirmedInjury && (
+        {!confirmedInjury && !injurySkipped && (
           <InjuryAssessment
             onComplete={handleInjurySelect}
-            onSkip={() => setRecommendedExercises([])}
+            onSkip={() => {
+              setRecommendedExercises([]);
+              setInjurySkipped(true);
+            }}
           />
+        )}
+
+        {/* Collapsed Injury Assessment */}
+        {!confirmedInjury && injurySkipped && (
+          <div className="bg-[#0d1526] border border-[#1c2e50] rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🩺</span>
+                <span className="text-sm text-[#c8d8f0]">No injury selected - Showing all exercises</span>
+              </div>
+              <button
+                onClick={() => setInjurySkipped(false)}
+                className="text-xs px-3 py-1.5 bg-[#00e5ff]/10 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg
+                  hover:bg-[#00e5ff]/20 transition-all"
+              >
+                Select Injury
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Injury-based recommendation banner */}
@@ -149,7 +173,10 @@ function App() {
                 </span>
               </div>
               <button
-                onClick={() => setInjury(null)}
+                onClick={() => {
+                  setInjury(null);
+                  setInjurySkipped(false);
+                }}
                 className="text-xs px-3 py-1.5 bg-[#1c2e50] text-[#00e5ff] rounded-lg
                   hover:bg-[#2d3f5c] transition-all"
               >
