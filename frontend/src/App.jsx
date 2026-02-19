@@ -98,13 +98,16 @@ function App() {
                 setFlow('landing');
               }}
             />
-            <div>
-              <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
-                Ortho<span className="text-[#00e5ff]">Vita</span>
-              </h1>
-              <p className="text-[#4a5e80] text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                AI-POWERED REHABILITATION • DAY {rehabDay}
-              </p>
+            <div className="flex items-center gap-3">
+              <img src="/Untitled design.png" alt="OrthoVita Logo" className="h-14 w-auto object-contain rounded-lg" />
+              <div>
+                <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
+                  Ortho<span className="text-[#00e5ff]">Vita</span>
+                </h1>
+                <p className="text-[#4a5e80] text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  AI-POWERED REHABILITATION • DAY {rehabDay}
+                </p>
+              </div>
             </div>
           </div>
 
