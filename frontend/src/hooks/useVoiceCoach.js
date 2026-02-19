@@ -80,32 +80,54 @@ const translateToHindi = (text) => {
   const translations = {
     // Squat feedback
     'Stand ready': 'तैयार खड़े रहें',
+    '✓ Perfect depth! Now stand up': '✓ बिल्कुल सही गहराई! अब खड़े हो जाएं',
+    '✓ Rep counted! Go down again': '✓ गिना गया! फिर से नीचे जाएं',
+    '✗ Too deep! Come up slightly (80-100°)': '✗ बहुत गहरा! थोड़ा ऊपर आएं (80-100°)',
+    '✗ Go lower! Reach 80-100° angle': '✗ और नीचे जाएं! 80-100° तक पहुंचें',
+    'Squat down to 90°': '90° तक स्क्वाट करें',
+    
+    // Bicep Curl feedback
+    'Arm at side': 'हाथ बगल में',
+    '✓ Perfect curl! Lower down': '✓ बिल्कुल सही! नीचे करें',
+    '✓ Rep counted! Curl again': '✓ गिना गया! फिर से कर्ल करें',
+    '✗ Too much curl! Relax slightly': '✗ बहुत ज्यादा कर्ल! थोड़ा ढीला करें',
+    '✗ Curl more! Reach 50-70°': '✗ और कर्ल करें! 50-70° तक पहुंचें',
+    'Curl arm up': 'हाथ ऊपर कर्ल करें',
+    '✗ Extend arm fully (160°+)': '✗ हाथ पूरा फैलाएं (160°+)',
+    
+    // Knee Raise feedback
+    'Stand straight': 'सीधे खड़े रहें',
+    '✓ Perfect height! Lower leg': '✓ बिल्कुल सही ऊंचाई! पैर नीचे करें',
+    '✗ Too high! Lower slightly': '✗ बहुत ऊंचा! थोड़ा नीचे करें',
+    '✗ Raise higher! Reach hip level': '✗ और ऊपर उठाएं! कूल्हे तक पहुंचें',
+    'Raise your knee to hip level': 'घुटना कूल्हे तक उठाएं',
+    '✗ Lower leg completely': '✗ पैर पूरा नीचे करें',
+    
+    // Shoulder Press feedback
+    'Start position': 'शुरुआती स्थिति',
+    '✓ Full extension! Lower down': '✓ पूरा फैलाव! नीचे करें',
+    '✗ Press higher! Fully extend arms': '✗ और ऊपर दबाएं! हाथ पूरे फैलाएं',
+    '✗ Lower to shoulder level (80-100°)': '✗ कंधे तक नीचे करें (80-100°)',
+    'Press arms overhead': 'हाथ सिर के ऊपर दबाएं',
+    'Lower to shoulders': 'कंधों तक नीचे करें',
+    
+    // Old feedback (keeping for compatibility)
     '✓ Good depth! Now stand up': '✓ अच्छी गहराई! अब खड़े हो जाएं',
     '✓ Rep complete! Go down again': '✓ एक पूरा! फिर से नीचे जाएं',
     '△ Go lower (below 100°)': '△ और नीचे जाएं (100° से नीचे)',
     '✗ Too deep - risk of injury': '✗ बहुत गहरा - चोट का खतरा',
     'Squat down': 'स्क्वाट करें',
-    
-    // Bicep Curl feedback
-    'Arm at side': 'हाथ बगल में',
     'Good curl! Lower down': 'अच्छा कर्ल! नीचे करें',
     'Rep complete! Curl again': 'एक पूरा! फिर से कर्ल करें',
     'Extend arm fully': 'हाथ पूरा फैलाएं',
     'Curl up more': 'और ऊपर कर्ल करें',
-    
-    // Knee Raise feedback
-    'Stand straight': 'सीधे खड़े रहें',
     'Good! Lower leg': 'अच्छा! पैर नीचे करें',
     'Rep done! Raise again': 'एक पूरा! फिर से उठाएं',
     'Raise your knee': 'घुटना उठाएं',
     'Lower your leg': 'पैर नीचे करें',
-    
-    // Shoulder Press feedback
-    'Start position': 'शुरुआती स्थिति',
     'Great press! Lower down': 'बढ़िया प्रेस! नीचे करें',
     'Rep complete! Press again': 'एक पूरा! फिर से प्रेस करें',
     'Press arms up': 'हाथ ऊपर दबाएं',
-    'Lower to shoulders': 'कंधों तक नीचे करें',
     
     // Lateral Raise feedback
     'Arms at sides': 'हाथ बगल में',
