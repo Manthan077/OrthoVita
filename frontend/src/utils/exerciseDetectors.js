@@ -478,6 +478,8 @@ export const detectNeckTilt = (landmarks, prevState) => {
   return { reps, stage, feedback, accuracy, angle: 0, status };
 };
 
+
+
 // Exercise detector for Calf Raises
 export const detectCalfRaise = (landmarks, prevState) => {
   const leftKnee = getLandmark(landmarks, POSE_LANDMARKS.LEFT_KNEE);
@@ -532,12 +534,6 @@ export const EXERCISES = {
     description: 'Leg strength & balance - Side profile',
     category: 'Lower Body',
   },
-  calfRaise: {
-    name: 'Calf Raise',
-    detector: detectCalfRaise,
-    description: 'Ankle mobility - Face camera',
-    category: 'Lower Body',
-  },
   bicepCurl: {
     name: 'Bicep Curl',
     detector: detectBicepCurl,
@@ -554,12 +550,6 @@ export const EXERCISES = {
     name: 'Lateral Raise',
     detector: detectLateralRaise,
     description: 'Shoulder mobility - Face camera',
-    category: 'Upper Body',
-  },
-  armCircle: {
-    name: 'Arm Circle',
-    detector: detectArmCircle,
-    description: 'Shoulder flexibility - Face camera',
     category: 'Upper Body',
   },
   wristRotation: {
