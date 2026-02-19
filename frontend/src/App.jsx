@@ -102,19 +102,11 @@ function App() {
 
           <div className="flex items-center gap-4">
             <button
-<<<<<<< HEAD
               onClick={() => setShowHistory(true)}
               className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
                 hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
             >
               📊 History
-=======
-              onClick={() => setShowInjuryAssessment(true)}
-              className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
-                hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
-            >
-              🩺 {confirmedInjury ? 'Update Injury' : 'Add Injury'}
->>>>>>> 47234a4f8ac0153104ac2bfe72595f60bec9e737
             </button>
             <button
               onClick={() => setShowNutrition(true)}
