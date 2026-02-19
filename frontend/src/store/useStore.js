@@ -89,12 +89,21 @@ export const useStore = create(
       }),
       
       updateStats: (reps, accuracy, feedback, angle) => set((state) => {
+        // Don't update reps if accuracy is 0 (user not in frame)
+        if (accuracy === 0) {
+          return {
+            feedback,
+            accuracy: 0
+          };
+        }
+        
         // Only add to sessionData when rep count increases
         let newSessionData = state.sessionData;
         if (reps > state.reps) {
           newSessionData = [...state.sessionData, { rep: reps, accuracy, angle: angle || 0, timestamp: Date.now() }];
         }
         
+        // Show average accuracy if we have completed reps, otherwise show current accuracy
         const avgAccuracy = newSessionData.length > 0
           ? Math.round(newSessionData.reduce((sum, d) => sum + d.accuracy, 0) / newSessionData.length)
           : accuracy;

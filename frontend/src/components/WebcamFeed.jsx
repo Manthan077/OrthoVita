@@ -49,7 +49,7 @@ export const WebcamFeed = () => {
       drawSkeleton(ctx, landmarks, canvas.width, canvas.height, result);
 
       // Safety validation with angle tracking
-      if (result.angle) {
+      if (result.angle !== undefined) {
         const safety = validateSafety(currentExercise, result.angle, prevAngle.current);
         setSafetyStatus(safety);
         
@@ -295,8 +295,21 @@ export const WebcamFeed = () => {
         </div>
       )}
 
+      {/* Feedback overlay for exercises without angle */}
+      {isActive && exerciseStateRef.current?.feedback && exerciseStateRef.current?.angle === 0 && !safetyStatus && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30
+          px-6 py-3 rounded-xl backdrop-blur-sm font-bold text-base shadow-lg"
+          style={{
+            backgroundColor: 'rgba(0, 229, 255, 0.1)',
+            border: '2px solid #00e5ff',
+            color: '#00e5ff'
+          }}>
+          {exerciseStateRef.current.feedback}
+        </div>
+      )}
+
       {/* Angle display */}
-      {isActive && exerciseStateRef.current?.angle && (
+      {isActive && exerciseStateRef.current?.angle !== undefined && exerciseStateRef.current.angle > 0 && (
         <div className="absolute bottom-16 left-4 z-30 bg-[#060b14]/90 border border-[#1c2e50]
           rounded-xl p-3 backdrop-blur-sm">
           <div className="text-xs text-[#4a5e80] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>

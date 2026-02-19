@@ -9,6 +9,23 @@ export const detectSquat = (landmarks, prevState) => {
   const rightKnee = getLandmark(landmarks, POSE_LANDMARKS.RIGHT_KNEE);
   const rightAnkle = getLandmark(landmarks, POSE_LANDMARKS.RIGHT_ANKLE);
 
+  // Check visibility
+  const minVisibility = 0.6;
+  const leftVisible = leftHip.visibility > minVisibility && leftKnee.visibility > minVisibility && leftAnkle.visibility > minVisibility;
+  const rightVisible = rightHip.visibility > minVisibility && rightKnee.visibility > minVisibility && rightAnkle.visibility > minVisibility;
+  
+  if (!leftVisible && !rightVisible) {
+    return {
+      reps: prevState?.reps || 0,
+      stage: prevState?.stage || 'up',
+      feedback: 'Position yourself in frame',
+      accuracy: 0,
+      angle: 0,
+      status: 'incorrect',
+      repAccuracy: prevState?.repAccuracy || []
+    };
+  }
+
   const leftKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
   const rightKneeAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
   const kneeAngle = Math.min(leftKneeAngle, rightKneeAngle);
@@ -20,26 +37,43 @@ export const detectSquat = (landmarks, prevState) => {
   let reps = prevState?.reps || 0;
   let stage = prevState?.stage || 'up';
   let status = 'neutral';
-  let accuracy = 100;
+  let accuracy = 70;
+  let repAccuracy = prevState?.repAccuracy || [];
 
   if (stage === 'up' && isDown) {
     stage = 'down';
     feedback = '✓ Good depth! Stand up';
     status = 'correct';
-    accuracy = kneeAngle >= 80 && kneeAngle <= 100 ? 100 : 80;
+    if (kneeAngle >= 80 && kneeAngle <= 100) {
+      accuracy = 100;
+    } else if (kneeAngle >= 70 && kneeAngle < 80) {
+      accuracy = 85;
+    } else if (kneeAngle > 100 && kneeAngle <= 110) {
+      accuracy = 90;
+    } else {
+      accuracy = 75;
+    }
+    repAccuracy = [accuracy];
   } else if (stage === 'down' && isUp) {
     stage = 'up';
     reps++;
     feedback = '✓ Rep counted!';
     status = 'correct';
-    accuracy = 100;
+    repAccuracy.push(95);
+    accuracy = Math.round(repAccuracy.reduce((sum, a) => sum + a, 0) / repAccuracy.length);
+    repAccuracy = [];
   } else if (stage === 'up') {
     feedback = 'Squat down';
+    accuracy = 70;
   } else if (stage === 'down') {
     feedback = 'Stand up fully';
+    accuracy = 75;
+    if (repAccuracy.length > 0) {
+      repAccuracy.push(75);
+    }
   }
 
-  return { reps, stage, feedback, accuracy, angle: Math.round(kneeAngle), status };
+  return { reps, stage, feedback, accuracy, angle: Math.round(kneeAngle), status, repAccuracy };
 };
 
 // Exercise detector for Bicep Curl
@@ -51,37 +85,71 @@ export const detectBicepCurl = (landmarks, prevState) => {
   const rightElbow = getLandmark(landmarks, POSE_LANDMARKS.RIGHT_ELBOW);
   const rightWrist = getLandmark(landmarks, POSE_LANDMARKS.RIGHT_WRIST);
 
+  // Check visibility - require high confidence for all key points
+  const minVisibility = 0.6;
+  const leftVisible = leftShoulder.visibility > minVisibility && leftElbow.visibility > minVisibility && leftWrist.visibility > minVisibility;
+  const rightVisible = rightShoulder.visibility > minVisibility && rightElbow.visibility > minVisibility && rightWrist.visibility > minVisibility;
+  
+  if (!leftVisible && !rightVisible) {
+    return {
+      reps: prevState?.reps || 0,
+      stage: prevState?.stage || 'down',
+      feedback: 'Position yourself in frame',
+      accuracy: 0,
+      angle: 0,
+      status: 'incorrect',
+      repAccuracy: prevState?.repAccuracy || []
+    };
+  }
+
   const leftElbowAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
   const rightElbowAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
   const elbowAngle = Math.min(leftElbowAngle, rightElbowAngle);
   
-  const isCurled = elbowAngle < 80;
-  const isExtended = elbowAngle > 150;
+  const isCurled = elbowAngle < 70;
+  const isExtended = elbowAngle > 160;
 
   let feedback = 'Arm at side';
   let reps = prevState?.reps || 0;
   let stage = prevState?.stage || 'down';
   let status = 'neutral';
-  let accuracy = 100;
+  let accuracy = 70;
+  let repAccuracy = prevState?.repAccuracy || [];
 
   if (stage === 'down' && isCurled) {
     stage = 'up';
     feedback = '✓ Good curl! Lower down';
     status = 'correct';
-    accuracy = elbowAngle >= 50 && elbowAngle <= 70 ? 100 : 85;
+    if (elbowAngle >= 40 && elbowAngle <= 60) {
+      accuracy = 100;
+    } else if (elbowAngle >= 30 && elbowAngle < 40) {
+      accuracy = 90;
+    } else if (elbowAngle > 60 && elbowAngle <= 70) {
+      accuracy = 85;
+    } else {
+      accuracy = 75;
+    }
+    repAccuracy = [accuracy];
   } else if (stage === 'up' && isExtended) {
     stage = 'down';
     reps++;
     feedback = '✓ Rep counted!';
     status = 'correct';
-    accuracy = 100;
+    repAccuracy.push(100);
+    accuracy = Math.round(repAccuracy.reduce((sum, a) => sum + a, 0) / repAccuracy.length);
+    repAccuracy = [];
   } else if (stage === 'down') {
     feedback = 'Curl arm up';
+    accuracy = 70;
   } else if (stage === 'up') {
     feedback = 'Extend arm fully';
+    accuracy = 75;
+    if (repAccuracy.length > 0) {
+      repAccuracy.push(75);
+    }
   }
 
-  return { reps, stage, feedback, accuracy, angle: Math.round(elbowAngle), status };
+  return { reps, stage, feedback, accuracy, angle: Math.round(elbowAngle), status, repAccuracy };
 };
 
 // Exercise detector for Knee Raise
