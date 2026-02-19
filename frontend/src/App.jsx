@@ -5,6 +5,7 @@ import { StatsPanel } from './components/StatsPanel';
 import { ControlButtons } from './components/ControlButtons';
 import { SessionSummary } from './components/SessionSummary';
 import { ExerciseHistory } from './components/ExerciseHistory';
+import { InjuryAssessment } from './components/InjuryAssessment';
 import { LandingPage } from './components/LandingPage';
 import { GeminiChatbot } from './components/GeminiChatbot';
 import { AIGreeting } from './components/AIGreeting';
@@ -42,6 +43,11 @@ function App() {
   const handleAuth = (userData) => {
     setUser(userData);
     setFlow('dashboard');
+  };
+
+  const handleInjurySelect = (injuryData) => {
+    setInjury(injuryData.injury);
+    setRecommendedExercises(injuryData.exercises);
   };
 
   const handleInjuryConfirm = (injuryData) => {
@@ -124,14 +130,31 @@ function App() {
           </div>
         </div>
 
+        {/* Injury Assessment */}
+        {!confirmedInjury && (
+          <InjuryAssessment
+            onComplete={handleInjurySelect}
+            onSkip={() => setRecommendedExercises([])}
+          />
+        )}
+
         {/* Injury-based recommendation banner */}
         {confirmedInjury && (
           <div className="bg-[#00e5ff]/10 border border-[#00e5ff]/30 rounded-xl p-4 mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">💡</span>
-              <span className="text-sm font-bold text-[#00e5ff]" style={{ fontFamily: "'Syne', sans-serif" }}>
-                Personalized Recommendations
-              </span>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">💡</span>
+                <span className="text-sm font-bold text-[#00e5ff]" style={{ fontFamily: "'Syne', sans-serif" }}>
+                  Personalized Recommendations
+                </span>
+              </div>
+              <button
+                onClick={() => setInjury(null)}
+                className="text-xs px-3 py-1.5 bg-[#1c2e50] text-[#00e5ff] rounded-lg
+                  hover:bg-[#2d3f5c] transition-all"
+              >
+                Change Injury
+              </button>
             </div>
             <p className="text-sm text-[#c8d8f0]">
               Based on your {confirmedInjury}, we've selected exercises that are safe and beneficial for your recovery.
