@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+const getDateKey = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+};
+
 export const useStore = create(
   persist(
     (set) => ({
@@ -10,6 +15,7 @@ export const useStore = create(
       confirmedInjury: null,
       rehabPlan: null,
       sessionHistory: [],
+      lastLoginDate: null,
 
       // Exercise state
       currentExercise: null,
@@ -22,7 +28,15 @@ export const useStore = create(
       badPostureCount: 0,
 
       // Actions
-      setUser: (user) => set({ user }),
+      setUser: (user) => set((state) => {
+        const today = getDateKey();
+        const isNewDay = state.lastLoginDate !== today;
+        return {
+          user,
+          lastLoginDate: today,
+          rehabDay: isNewDay ? state.rehabDay + 1 : state.rehabDay
+        };
+      }),
       setInjury: (injury) => set({ confirmedInjury: injury }),
       setRehabPlan: (plan) => set({ rehabPlan: plan }),
       incrementRehabDay: () => set((state) => ({ rehabDay: state.rehabDay + 1 })),
@@ -63,12 +77,14 @@ export const useStore = create(
           avgAngle,
           badPosturePercent,
           duration,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          day: state.rehabDay,
+          date: getDateKey()
         };
 
         return {
           isActive: false,
-          sessionHistory: [...state.sessionHistory.slice(-9), session]
+          sessionHistory: [...state.sessionHistory, session]
         };
       }),
       
@@ -103,7 +119,8 @@ export const useStore = create(
         rehabDay: state.rehabDay,
         confirmedInjury: state.confirmedInjury,
         rehabPlan: state.rehabPlan,
-        sessionHistory: state.sessionHistory
+        sessionHistory: state.sessionHistory,
+        lastLoginDate: state.lastLoginDate
       })
     }
   )
