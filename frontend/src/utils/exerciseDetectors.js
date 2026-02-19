@@ -518,6 +518,73 @@ export const detectCalfRaise = (landmarks, prevState) => {
   return { reps, stage, feedback, accuracy, baselineY, angle: 0, status };
 };
 
+// Exercise detector for Fist Clench
+export const detectFistClench = (handLandmarks, prevState) => {
+  if (!handLandmarks || handLandmarks.length === 0) {
+    return { reps: prevState?.reps || 0, stage: prevState?.stage || 'open', feedback: 'Show hand to camera', accuracy: 0, angle: 0, status: 'neutral', lastTransition: prevState?.lastTransition || 0 };
+  }
+
+  const hand = handLandmarks[0]; // Use first detected hand
+  
+  // Calculate if fist is closed by checking finger tip distances from palm
+  const wrist = hand[0];
+  const thumbTip = hand[4];
+  const indexTip = hand[8];
+  const middleTip = hand[12];
+  const ringTip = hand[16];
+  const pinkyTip = hand[20];
+  const palmCenter = hand[9]; // Middle finger base
+  
+  // Calculate distances from palm center to each fingertip
+  const getDistance = (p1, p2) => {
+    return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+  };
+  
+  const indexDist = getDistance(indexTip, palmCenter);
+  const middleDist = getDistance(middleTip, palmCenter);
+  const ringDist = getDistance(ringTip, palmCenter);
+  const pinkyDist = getDistance(pinkyTip, palmCenter);
+  const avgDist = (indexDist + middleDist + ringDist + pinkyDist) / 4;
+  
+  const isClosed = avgDist < 0.08; // Fist closed
+  const isOpen = avgDist > 0.15;   // Hand open
+  
+  const lastTransition = prevState?.lastTransition || 0;
+  const now = Date.now();
+  const minTransitionTime = 400;
+  
+  let feedback = 'Open hand';
+  let reps = prevState?.reps || 0;
+  let stage = prevState?.stage || 'open';
+  let status = 'neutral';
+  let accuracy = 100;
+  
+  if (now - lastTransition < minTransitionTime) {
+    return { reps, stage, feedback, accuracy, angle: 0, status, lastTransition };
+  }
+  
+  if (stage === 'open' && isClosed) {
+    stage = 'closed';
+    feedback = '✓ Fist closed! Now open';
+    status = 'correct';
+    accuracy = 100;
+    return { reps, stage, feedback, accuracy, angle: 0, status, lastTransition: now };
+  } else if (stage === 'closed' && isOpen) {
+    stage = 'open';
+    reps++;
+    feedback = '✓ Rep counted!';
+    status = 'correct';
+    accuracy = 100;
+    return { reps, stage, feedback, accuracy, angle: 0, status, lastTransition: now };
+  } else if (stage === 'open') {
+    feedback = 'Close fist';
+  } else if (stage === 'closed') {
+    feedback = 'Open hand';
+  }
+  
+  return { reps, stage, feedback, accuracy, angle: 0, status, lastTransition };
+};
+
 // Exercise registry
 export const EXERCISES = {
   squat: {
@@ -579,5 +646,12 @@ export const EXERCISES = {
     detector: detectNeckTilt,
     description: 'Neck mobility - Face camera',
     category: 'Core & Balance',
+  },
+  fistClench: {
+    name: 'Fist Clench',
+    detector: detectFistClench,
+    description: 'Hand strength - Show hand to camera',
+    category: 'Upper Body',
+    usesHands: true,
   },
 };

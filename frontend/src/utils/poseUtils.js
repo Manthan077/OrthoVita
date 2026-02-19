@@ -119,3 +119,85 @@ export const validatePosture = (angle, idealMin, idealMax) => {
     return { status: '△', message: 'Adjust posture', color: '#ffaa00' };
   }
 };
+
+// Draw hand skeleton with finger tracking
+export const drawHandSkeleton = (ctx, handLandmarks, width, height, exerciseData = null) => {
+  if (!handLandmarks || handLandmarks.length === 0) return;
+
+  handLandmarks.forEach((hand) => {
+    // Hand connections (finger bones)
+    const connections = [
+      // Thumb
+      [0, 1], [1, 2], [2, 3], [3, 4],
+      // Index finger
+      [0, 5], [5, 6], [6, 7], [7, 8],
+      // Middle finger
+      [0, 9], [9, 10], [10, 11], [11, 12],
+      // Ring finger
+      [0, 13], [13, 14], [14, 15], [15, 16],
+      // Pinky
+      [0, 17], [17, 18], [18, 19], [19, 20],
+      // Palm
+      [5, 9], [9, 13], [13, 17]
+    ];
+
+    // Draw connections
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#00e5ff';
+    ctx.shadowBlur = 6;
+    connections.forEach(([start, end]) => {
+      const startPoint = hand[start];
+      const endPoint = hand[end];
+      if (startPoint && endPoint) {
+        ctx.beginPath();
+        ctx.moveTo(startPoint.x * width, startPoint.y * height);
+        ctx.lineTo(endPoint.x * width, endPoint.y * height);
+        ctx.stroke();
+      }
+    });
+    ctx.shadowBlur = 0;
+
+    // Draw fingertips
+    const fingerTips = [4, 8, 12, 16, 20]; // Thumb, Index, Middle, Ring, Pinky
+    const fingerNames = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+    
+    fingerTips.forEach((idx, i) => {
+      const point = hand[idx];
+      if (point) {
+        const x = point.x * width;
+        const y = point.y * height;
+        
+        // Draw fingertip circle
+        ctx.fillStyle = '#00ff9d';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Draw label
+        ctx.fillStyle = 'rgba(6, 11, 20, 0.8)';
+        ctx.fillRect(x + 8, y - 8, 50, 16);
+        
+        ctx.fillStyle = '#00e5ff';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.fillText(fingerNames[i], x + 12, y + 3);
+      }
+    });
+
+    // Draw palm center
+    const palmCenter = hand[9];
+    if (palmCenter) {
+      ctx.fillStyle = '#ff6b35';
+      ctx.beginPath();
+      ctx.arc(palmCenter.x * width, palmCenter.y * height, 6, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  });
+
+  // Draw status
+  if (exerciseData) {
+    ctx.fillStyle = 'rgba(0, 229, 255, 0.9)';
+    ctx.font = 'bold 20px "Syne", sans-serif';
+    ctx.fillText(exerciseData.stage === 'closed' ? '✊ CLOSED' : '✋ OPEN', 20, 40);
+  }
+};

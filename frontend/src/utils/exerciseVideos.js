@@ -98,5 +98,15 @@ export const EXERCISE_VIDEOS = {
       'Return to neutral position',
       'Tilt head down to look at chest'
     ]
+  },
+  fistClench: {
+    url: 'https://www.youtube.com/embed/a-hI6VVPGko',
+    title: 'Fist Clench Exercise',
+    keyPoints: [
+      'Show your hand to the camera',
+      'Close fist tightly, squeeze all fingers',
+      'Hold for 1 second',
+      'Open hand fully, spread fingers wide'
+    ]
   }
 };

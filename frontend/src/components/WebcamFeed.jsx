@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { usePoseDetection } from '../hooks/usePoseDetection';
+import { useHandDetection } from '../hooks/useHandDetection';
 import { useVoiceCoach } from '../hooks/useVoiceCoach';
-import { drawSkeleton } from '../utils/poseUtils';
+import { drawSkeleton, drawHandSkeleton } from '../utils/poseUtils';
 import { EXERCISES } from '../utils/exerciseDetectors';
 import { validateSafety, SAFETY_RULES } from '../utils/safetyRules';
 import { useStore } from '../store/useStore';
@@ -26,7 +27,7 @@ export const WebcamFeed = () => {
 
   // ── Pose detection callback ────────────────────────────────────────────────
   const onPoseResults = useCallback((landmarks) => {
-    if (!isActive || !currentExercise) return;
+    if (!isActive || !currentExercise || EXERCISES[currentExercise]?.usesHands) return;
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
@@ -82,7 +83,46 @@ export const WebcamFeed = () => {
     }
   }, [isActive, currentExercise, updateStats, speak]);
 
+  // ── Hand detection callback ────────────────────────────────────────────────
+  const onHandResults = useCallback((handLandmarks) => {
+    if (!isActive || !currentExercise || !EXERCISES[currentExercise]?.usesHands) return;
+
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    if (!canvas || !video) return;
+
+    if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const detector = EXERCISES[currentExercise]?.detector;
+    if (detector) {
+      const result = detector(handLandmarks, exerciseStateRef.current);
+      exerciseStateRef.current = result;
+      updateStats(result.reps, result.accuracy, result.feedback, result.angle);
+      
+      drawHandSkeleton(ctx, handLandmarks, canvas.width, canvas.height, result);
+
+      if (result.reps > 0 && result.reps % 5 === 0 && result.reps !== lastRepSpoken.current) {
+        speak(`${result.reps} reps done. Great work.`, true);
+        lastRepSpoken.current = result.reps;
+      }
+
+      if (result.reps === 1 && lastRepSpoken.current === 0) {
+        speak('First rep complete. Keep going.', true);
+        lastRepSpoken.current = 1;
+      }
+    } else {
+      drawHandSkeleton(ctx, handLandmarks, canvas.width, canvas.height);
+    }
+  }, [isActive, currentExercise, updateStats, speak]);
+
   const { isReady, error: poseError, startDetection, stopDetection } = usePoseDetection(onPoseResults);
+  const { isReady: isHandReady, error: handError, startDetection: startHandDetection, stopDetection: stopHandDetection } = useHandDetection(onHandResults);
 
   // ── Start camera ───────────────────────────────────────────────────────────
   const startCamera = async () => {
@@ -142,6 +182,7 @@ export const WebcamFeed = () => {
   // ── Stop camera ────────────────────────────────────────────────────────────
   const stopCamera = () => {
     stopDetection();
+    stopHandDetection();
     if (isActive) stopSession();
 
     if (streamRef.current) {
@@ -164,6 +205,7 @@ export const WebcamFeed = () => {
   useEffect(() => {
     return () => {
       stopDetection();
+      stopHandDetection();
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(t => t.stop());
       }
@@ -180,14 +222,21 @@ export const WebcamFeed = () => {
     setSafetyStatus(null);
   }, [currentExercise]);
 
-  // ── Start/stop pose detection when session state changes ───────────────────
+  // ── Start/stop detection when session state changes ───────────────────
   useEffect(() => {
-    if (isReady && videoReady && isActive && cameraOpen) {
-      startDetection(videoRef.current);
+    const usesHands = EXERCISES[currentExercise]?.usesHands;
+    
+    if (videoReady && isActive && cameraOpen) {
+      if (usesHands && isHandReady) {
+        startHandDetection(videoRef.current);
+      } else if (!usesHands && isReady) {
+        startDetection(videoRef.current);
+      }
     } else {
       stopDetection();
+      stopHandDetection();
     }
-  }, [isReady, videoReady, isActive, cameraOpen]);
+  }, [isReady, isHandReady, videoReady, isActive, cameraOpen, currentExercise]);
 
   // ── Camera closed view ─────────────────────────────────────────────────────
   if (!cameraOpen) {
@@ -366,20 +415,20 @@ export const WebcamFeed = () => {
       )}
 
       {/* Pose model loading overlay */}
-      {videoReady && !isReady && (
+      {videoReady && !isReady && !isHandReady && (
         <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center
           bg-[#060b14]/70 backdrop-blur-sm z-10 gap-3">
           <div className="w-8 h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
           <p className="text-[#00e5ff] text-sm animate-pulse" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-            LOADING POSE MODEL...
+            LOADING MODEL...
           </p>
         </div>
       )}
 
-      {/* Pose error */}
-      {poseError && (
+      {/* Error */}
+      {(poseError || handError) && (
         <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-[#060b14]/80 z-10">
-          <p className="text-red-400 text-sm px-6 text-center">{poseError}</p>
+          <p className="text-red-400 text-sm px-6 text-center">{poseError || handError}</p>
         </div>
       )}
     </div>
