@@ -1,8 +1,29 @@
 import { EXERCISES } from '../utils/exerciseDetectors';
 import { useStore } from '../store/useStore';
+import { useState } from 'react';
+import { ExerciseVideoModal } from './ExerciseVideoModal';
 
 export const ExerciseSelector = ({ recommendedExercises = [] }) => {
   const { currentExercise, setExercise, isActive } = useStore();
+  const [showVideo, setShowVideo] = useState(false);
+  const [selectedForVideo, setSelectedForVideo] = useState(null);
+
+  const handleExerciseClick = (key) => {
+    setSelectedForVideo(key);
+    setShowVideo(true);
+  };
+
+  const handleSkipVideo = () => {
+    setExercise(selectedForVideo);
+    setShowVideo(false);
+    setSelectedForVideo(null);
+  };
+
+  const handleStartAfterVideo = () => {
+    setExercise(selectedForVideo);
+    setShowVideo(false);
+    setSelectedForVideo(null);
+  };
 
   const categories = {
     'Upper Body': [],
@@ -46,7 +67,7 @@ export const ExerciseSelector = ({ recommendedExercises = [] }) => {
                 return (
                   <button
                     key={key}
-                    onClick={() => setExercise(key)}
+                    onClick={() => handleExerciseClick(key)}
                     disabled={isActive}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200
                       ${selected
@@ -70,6 +91,14 @@ export const ExerciseSelector = ({ recommendedExercises = [] }) => {
           </div>
         );
       })}
+
+      {showVideo && selectedForVideo && (
+        <ExerciseVideoModal
+          exerciseKey={selectedForVideo}
+          onSkip={handleSkipVideo}
+          onStart={handleStartAfterVideo}
+        />
+      )}
     </div>
   );
 };
