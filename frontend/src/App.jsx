@@ -88,9 +88,9 @@ function App() {
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <img src="/Untitled design.png" alt="OrthoVita Logo" className="h-14 w-auto object-contain rounded-lg" />
-            <div>
+        <div className="flex items-center gap-3">
+          <img src="/OrthoVita.png" alt="OrthoVita Logo" className="h-16 w-auto object-contain rounded-lg" />
+          <div>
               <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
                 Ortho<span className="text-[#00e5ff]">Vita</span>
               </h1>

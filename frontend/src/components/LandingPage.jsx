@@ -48,7 +48,7 @@ export function LandingPage({ onAuth }) {
       <nav className="sticky top-0 z-50 flex items-center justify-between px-8 h-16
                       bg-[#0d1117]/90 backdrop-blur-md border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <img src="/Untitled design.png" alt="OrthoVita Logo" className="h-10 w-auto object-contain rounded-md" />
+          <img src="/OrthoVita.png" alt="OrthoVita Logo" className="h-12 w-auto object-contain rounded-lg" />
           <span className="text-3xl font-bold tracking-tight">
             Ortho<span className="text-cyan-400">Vita</span>
           </span>
@@ -233,7 +233,7 @@ export function LandingPage({ onAuth }) {
       <footer className="border-t border-white/[0.06] px-8 py-6 flex items-center
                          justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <img src="/Untitled design.png" alt="OrthoVita Logo" className="h-6 w-auto object-contain rounded-md" />
+          <img src="/OrthoVita.png" alt="OrthoVita Logo" className="h-6 w-auto object-contain rounded-md" />
           <span className="text-sm font-semibold">
             Ortho<span className="text-cyan-400">Vita</span>
           </span>
