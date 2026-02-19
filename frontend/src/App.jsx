@@ -27,17 +27,17 @@ function App() {
   useEffect(() => {
     if (!user) {
       setFlow('landing');
-    } else if (confirmedInjury === undefined) {
-      setFlow('injury');
     } else {
       setFlow('dashboard');
-      setRecommendedExercises(getRecommendedExercises(confirmedInjury));
+      if (confirmedInjury) {
+        setRecommendedExercises(getRecommendedExercises(confirmedInjury));
+      }
     }
   }, [user, confirmedInjury]);
 
   const handleAuth = (userData) => {
     setUser(userData);
-    setFlow('greeting');
+    setFlow('dashboard');
   };
 
   const handleInjuryConfirm = (injuryData) => {
@@ -58,13 +58,7 @@ function App() {
     return <LandingPage onAuth={handleAuth} />;
   }
 
-  if (flow === 'greeting') {
-    return <AIGreeting user={user} rehabDay={rehabDay} onContinue={() => setFlow('injury')} />;
-  }
 
-  if (flow === 'injury') {
-    return <InjuryConfirmation onConfirm={handleInjuryConfirm} onSkip={handleSkipInjury} />;
-  }
 
   return (
     <div className="min-h-screen bg-[#060b14] text-[#e8f0ff]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
