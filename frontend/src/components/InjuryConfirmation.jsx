@@ -17,21 +17,32 @@ export const InjuryConfirmation = ({ onConfirm, onSkip }) => {
     setLoading(false);
   };
 
-  const handleAnswer = (answer) => {
+  const handleAnswer = async (answer) => {
     const newAnswers = [...answers, answer];
     setAnswers(newAnswers);
+    
     if (newAnswers.length === aiResponse.confirmationQuestions.length) {
-      onConfirm({ injury: aiResponse.suspectedInjury, answers: newAnswers });
+      setLoading(true);
+      const recommendations = await aiService.getExerciseRecommendations(
+        aiResponse.suspectedInjury,
+        newAnswers
+      );
+      setLoading(false);
+      onConfirm({ 
+        injury: aiResponse.suspectedInjury, 
+        answers: newAnswers,
+        recommendations 
+      });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#060b14] flex items-center justify-center p-6">
+    <div className="flex items-center justify-center min-h-screen p-6">
       <div className="max-w-2xl w-full bg-[#0d1526] border border-[#1c2e50] rounded-2xl p-8">
         <h2 className="text-2xl font-black text-[#e8f0ff] mb-2" style={{ fontFamily: "'Syne', sans-serif" }}>
           Injury Assessment (Optional)
         </h2>
-        <p className="text-[#4a5e80] text-sm mb-6">Get personalized exercise recommendations based on your condition</p>
+        <p className="text-[#4a5e80] text-sm mb-6">Get AI-powered personalized exercise recommendations</p>
 
         {step === 'input' && (
           <>
@@ -51,7 +62,7 @@ export const InjuryConfirmation = ({ onConfirm, onSkip }) => {
                 className="flex-1 px-6 py-3 bg-[#00e5ff] text-[#060b14] rounded-xl font-bold
                   hover:bg-[#00ccee] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {loading ? 'Analyzing...' : 'Continue'}
+                {loading ? 'Analyzing...' : 'Get AI Recommendations'}
               </button>
               <button
                 onClick={onSkip}
@@ -67,33 +78,42 @@ export const InjuryConfirmation = ({ onConfirm, onSkip }) => {
         {step === 'questions' && aiResponse && (
           <>
             <div className="bg-[#060b14] border border-[#00e5ff]/20 rounded-xl p-4 mb-6">
-              <p className="text-sm text-[#4a5e80] mb-1">Suspected Injury:</p>
+              <p className="text-sm text-[#4a5e80] mb-1">AI Detected:</p>
               <p className="text-lg font-bold text-[#00e5ff]">{aiResponse.suspectedInjury}</p>
             </div>
 
-            <p className="text-[#c8d8f0] mb-4">
-              Question {answers.length + 1} of {aiResponse.confirmationQuestions.length}:
-            </p>
-            <p className="text-lg text-[#e8f0ff] mb-6">
-              {aiResponse.confirmationQuestions[answers.length]}
-            </p>
+            {loading ? (
+              <div className="flex flex-col items-center gap-3 py-8">
+                <div className="w-8 h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
+                <p className="text-[#00e5ff] text-sm">AI is analyzing safe exercises for you...</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-[#c8d8f0] mb-4">
+                  Question {answers.length + 1} of {aiResponse.confirmationQuestions.length}:
+                </p>
+                <p className="text-lg text-[#e8f0ff] mb-6">
+                  {aiResponse.confirmationQuestions[answers.length]}
+                </p>
 
-            <div className="flex gap-4">
-              <button
-                onClick={() => handleAnswer('Yes')}
-                className="flex-1 px-6 py-3 bg-[#00e5ff] text-[#060b14] rounded-xl font-bold
-                  hover:bg-[#00ccee] transition-all"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => handleAnswer('No')}
-                className="flex-1 px-6 py-3 bg-[#1c2e50] text-[#e8f0ff] rounded-xl font-bold
-                  hover:bg-[#2d3f5c] transition-all"
-              >
-                No
-              </button>
-            </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => handleAnswer('Yes')}
+                    className="flex-1 px-6 py-3 bg-[#00e5ff] text-[#060b14] rounded-xl font-bold
+                      hover:bg-[#00ccee] transition-all"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={() => handleAnswer('No')}
+                    className="flex-1 px-6 py-3 bg-[#1c2e50] text-[#e8f0ff] rounded-xl font-bold
+                      hover:bg-[#2d3f5c] transition-all"
+                  >
+                    No
+                  </button>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

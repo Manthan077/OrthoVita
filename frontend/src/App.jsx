@@ -22,6 +22,7 @@ function App() {
   const [flow, setFlow] = useState('landing');
   const [showBriefing, setShowBriefing] = useState(false);
   const [showNutrition, setShowNutrition] = useState(false);
+  const [showInjuryAssessment, setShowInjuryAssessment] = useState(false);
   const [recommendedExercises, setRecommendedExercises] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -31,7 +32,8 @@ function App() {
       setFlow('landing');
     } else {
       setFlow('dashboard');
-      if (confirmedInjury) {
+      // Only use fallback mapping if no AI recommendations
+      if (confirmedInjury && recommendedExercises.length === 0) {
         setRecommendedExercises(getRecommendedExercises(confirmedInjury));
       }
     }
@@ -44,12 +46,14 @@ function App() {
 
   const handleInjuryConfirm = (injuryData) => {
     setInjury(injuryData.injury);
-    setFlow('dashboard');
+    setRecommendedExercises(injuryData.recommendations || []);
+    setShowInjuryAssessment(false);
   };
 
   const handleSkipInjury = () => {
     setInjury(null);
-    setFlow('dashboard');
+    setRecommendedExercises([]);
+    setShowInjuryAssessment(false);
   };
 
   const handleSaveProfile = (profileData) => {
@@ -98,11 +102,19 @@ function App() {
 
           <div className="flex items-center gap-4">
             <button
+<<<<<<< HEAD
               onClick={() => setShowHistory(true)}
               className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
                 hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
             >
               📊 History
+=======
+              onClick={() => setShowInjuryAssessment(true)}
+              className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
+                hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
+            >
+              🩺 {confirmedInjury ? 'Update Injury' : 'Add Injury'}
+>>>>>>> 47234a4f8ac0153104ac2bfe72595f60bec9e737
             </button>
             <button
               onClick={() => setShowNutrition(true)}
@@ -184,6 +196,15 @@ function App() {
           effortLevel="moderate"
           onClose={() => setShowNutrition(false)}
         />
+      )}
+
+      {showInjuryAssessment && (
+        <div className="fixed inset-0 bg-[#060b14]/95 backdrop-blur-sm z-50">
+          <InjuryConfirmation
+            onConfirm={handleInjuryConfirm}
+            onSkip={handleSkipInjury}
+          />
+        </div>
       )}
 
       {showProfile && (

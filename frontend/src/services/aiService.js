@@ -20,10 +20,10 @@ export const aiService = {
   async confirmInjury(injuryDescription) {
     try {
       const chat = ai.chats.create({
-        model: 'gemini-3-flash-preview',
-        config: { temperature: 0.3, maxOutputTokens: 150 },
+        model: 'gemini-2.0-flash-exp',
+        config: { temperature: 0.3, maxOutputTokens: 200 },
       });
-      const prompt = `Injury: "${injuryDescription}". Return JSON: {suspectedInjury: string, confirmationQuestions: [string, string]}. Support: knee pain, lower back pain, shoulder pain.`;
+      const prompt = `Injury: "${injuryDescription}". Return JSON: {suspectedInjury: string, confirmationQuestions: [string, string]}. Support: knee pain, lower back pain, shoulder pain, hip pain, ankle pain, wrist pain, elbow pain.`;
       const response = await chat.sendMessage({ message: prompt });
       return JSON.parse(response.text.replace(/```json|```/g, '').trim());
     } catch (err) {
@@ -32,6 +32,83 @@ export const aiService = {
         confirmationQuestions: ['Is the pain constant or intermittent?', 'Does movement worsen the pain?']
       };
     }
+  },
+
+  async getExerciseRecommendations(injury, answers) {
+    const lower = injury.toLowerCase();
+    console.log('Analyzing injury:', injury);
+    
+    let recommendations = [];
+    
+    // Check for known injury patterns first
+    if (lower.includes('knee')) {
+      recommendations = ['bicepCurl', 'shoulderPress', 'lateralRaise', 'armCircle'];
+      console.log('Knee injury - upper body only');
+    }
+    else if (lower.includes('shoulder')) {
+      recommendations = ['squat', 'lunge', 'calfRaise', 'kneeRaise'];
+      console.log('Shoulder injury - lower body only');
+    }
+    else if (lower.includes('back') || lower.includes('spine') || lower.includes('lumbar')) {
+      recommendations = ['bicepCurl', 'shoulderPress', 'lateralRaise', 'armCircle', 'calfRaise'];
+      console.log('Back injury - no bending');
+    }
+    else if (lower.includes('ankle') || lower.includes('foot') || lower.includes('achilles')) {
+      recommendations = ['bicepCurl', 'shoulderPress', 'lateralRaise', 'armCircle'];
+      console.log('Ankle/foot injury - seated only');
+    }
+    else if (lower.includes('hip') || lower.includes('pelvis')) {
+      recommendations = ['bicepCurl', 'shoulderPress', 'lateralRaise', 'armCircle', 'calfRaise'];
+      console.log('Hip injury - no hip movement');
+    }
+    else if (lower.includes('elbow') || lower.includes('forearm')) {
+      recommendations = ['squat', 'lunge', 'calfRaise', 'kneeRaise', 'lateralRaise'];
+      console.log('Elbow injury - no elbow bending');
+    }
+    else if (lower.includes('wrist') || lower.includes('hand')) {
+      recommendations = ['squat', 'lunge', 'calfRaise', 'kneeRaise', 'lateralRaise'];
+      console.log('Wrist injury - no wrist load');
+    }
+    else {
+      // Unknown injury - use AI
+      console.log('Unknown injury type - asking AI...');
+      try {
+        const chat = ai.chats.create({
+          model: 'gemini-2.0-flash-exp',
+          config: { temperature: 0.2, maxOutputTokens: 150 },
+        });
+        const prompt = `Patient injury: "${injury}". Symptoms: ${answers.join(', ')}.
+
+Available exercises:
+- squat (standing, knee/hip bending)
+- lunge (standing, deep knee bending)
+- calfRaise (standing on toes)
+- bicepCurl (arm, can sit)
+- shoulderPress (shoulder, can sit)
+- lateralRaise (shoulder, can sit)
+- armCircle (shoulder, can sit)
+- kneeRaise (standing, lifting knee)
+
+Return ONLY safe exercises as JSON array:
+{"exercises": ["name1", "name2"]}
+
+Be conservative.`;
+        
+        const response = await chat.sendMessage({ message: prompt });
+        const text = response.text.replace(/```json|```/g, '').trim();
+        const result = JSON.parse(text);
+        recommendations = result.exercises || result.recommendedExercises || [];
+        console.log('AI recommended:', recommendations);
+      } catch (err) {
+        console.error('AI failed:', err);
+        // Safe default for unknown injuries
+        recommendations = ['bicepCurl', 'shoulderPress', 'lateralRaise', 'armCircle'];
+        console.log('Using safe default - upper body only');
+      }
+    }
+    
+    console.log('Final recommendations:', recommendations);
+    return recommendations;
   },
 
   async generateRehabPlan(profile) {
