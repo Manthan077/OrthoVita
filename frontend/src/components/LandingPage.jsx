@@ -117,7 +117,7 @@ export function LandingPage({ onAuth }) {
         <div className="flex divide-x divide-white/[0.07] border border-white/[0.07]
                         rounded-2xl overflow-hidden bg-white/[0.02] w-full max-w-lg">
           {[
-            { val: '4',    label: 'Exercises'  },
+            { val: '9',    label: 'Exercises'  },
             { val: '33',   label: 'Landmarks'  },
             { val: '100%', label: 'Browser'    },
             { val: '0ms',  label: 'Latency'    },
