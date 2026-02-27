@@ -241,34 +241,34 @@ export const WebcamFeed = () => {
   // ── Camera closed view ─────────────────────────────────────────────────────
   if (!cameraOpen) {
     return (
-      <div className="relative w-full max-w-2xl mx-auto">
+      <div className="relative w-full mx-auto">
         <div className="w-full bg-[#0d1526] border border-[#1c2e50] rounded-2xl
-          flex flex-col items-center justify-center gap-5 py-16 relative overflow-hidden">
+          flex flex-col items-center justify-center gap-4 sm:gap-5 py-12 sm:py-16 relative overflow-hidden">
 
           {/* Corner brackets */}
           {[['top-4 left-4','border-t-2 border-l-2'],['top-4 right-4','border-t-2 border-r-2'],
             ['bottom-4 left-4','border-b-2 border-l-2'],['bottom-4 right-4','border-b-2 border-r-2']
           ].map(([pos, border]) => (
-            <div key={pos} className={`absolute ${pos} w-8 h-8 ${border} border-[#00e5ff]/20`} />
+            <div key={pos} className={`absolute ${pos} w-6 sm:w-8 h-6 sm:h-8 ${border} border-[#00e5ff]/20`} />
           ))}
 
-          <div className="text-5xl opacity-20">📷</div>
-          <div className="text-center">
-            <p className="text-[#4a5e80] text-sm mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="text-4xl sm:text-5xl opacity-20">📷</div>
+          <div className="text-center px-4">
+            <p className="text-[#4a5e80] text-xs sm:text-sm mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
               CAMERA IS OFF
             </p>
-            <p className="text-[#2d3f5c] text-xs">Select an exercise above, then open camera to begin</p>
+            <p className="text-[#2d3f5c] text-xs">Select an exercise, then open camera</p>
           </div>
 
           {cameraError && (
-            <div className="mx-6 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
+            <div className="mx-4 sm:mx-6 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs sm:text-sm text-center">
               {cameraError}
             </div>
           )}
 
           <button
             onClick={startCamera}
-            className="px-6 py-2.5 bg-[#00e5ff] text-[#060b14] rounded-xl font-bold text-sm
+            className="px-5 sm:px-6 py-2 sm:py-2.5 bg-[#00e5ff] text-[#060b14] rounded-xl font-bold text-sm
               hover:bg-[#00ccee] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)]
               transition-all duration-200 active:scale-95"
             style={{ fontFamily: "'Syne', sans-serif" }}
@@ -282,13 +282,13 @@ export const WebcamFeed = () => {
 
   // ── Camera open view ───────────────────────────────────────────────────────
   return (
-    <div className="relative w-full max-w-2xl mx-auto">
+    <div className="relative w-full mx-auto">
 
       {/* ✕ Close button */}
       <button
         onClick={stopCamera}
         title="Close Camera"
-        className="absolute top-3 right-3 z-30 w-9 h-9 bg-[#060b14]/90 border border-[#1c2e50]
+        className="absolute top-2 sm:top-3 right-2 sm:right-3 z-30 w-8 sm:w-9 h-8 sm:h-9 bg-[#060b14]/90 border border-[#1c2e50]
           text-[#4a5e80] rounded-xl flex items-center justify-center text-sm
           hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-400
           transition-all duration-200 backdrop-blur-sm"
@@ -297,10 +297,10 @@ export const WebcamFeed = () => {
       </button>
 
       {/* LIVE badge */}
-      <div className="absolute top-3 left-3 z-30 flex items-center gap-2
-        bg-[#060b14]/80 border border-[#1c2e50] px-3 py-1.5 rounded-lg backdrop-blur-sm">
-        <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#00ff9d] animate-pulse' : 'bg-[#4a5e80]'}`} />
-        <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace",
+      <div className="absolute top-2 sm:top-3 left-2 sm:left-3 z-30 flex items-center gap-1.5 sm:gap-2
+        bg-[#060b14]/80 border border-[#1c2e50] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg backdrop-blur-sm">
+        <span className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${isActive ? 'bg-[#00ff9d] animate-pulse' : 'bg-[#4a5e80]'}`} />
+        <span className="text-[10px] sm:text-xs" style={{ fontFamily: "'JetBrains Mono', monospace",
           color: isActive ? '#00ff9d' : '#4a5e80' }}>
           {isActive ? 'TRACKING' : 'LIVE'}
         </span>
@@ -309,8 +309,8 @@ export const WebcamFeed = () => {
       {/* Voice toggle */}
       <button
         onClick={toggleVoice}
-        className="absolute top-3 right-14 z-30 w-9 h-9 bg-[#060b14]/90 border border-[#1c2e50]
-          rounded-xl flex items-center justify-center text-sm backdrop-blur-sm transition-all"
+        className="absolute top-2 sm:top-3 right-11 sm:right-14 z-30 w-8 sm:w-9 h-8 sm:h-9 bg-[#060b14]/90 border border-[#1c2e50]
+          rounded-xl flex items-center justify-center text-xs sm:text-sm backdrop-blur-sm transition-all"
         style={{ color: voiceEnabled ? '#00e5ff' : '#4a5e80' }}
         title={voiceEnabled ? 'Voice ON' : 'Voice OFF'}
       >
@@ -320,8 +320,8 @@ export const WebcamFeed = () => {
       {/* Language toggle */}
       <button
         onClick={toggleLanguage}
-        className="absolute top-14 right-14 z-30 px-2 py-1 bg-[#060b14]/90 border border-[#1c2e50]
-          rounded-lg text-xs backdrop-blur-sm transition-all font-bold"
+        className="absolute top-11 sm:top-14 right-11 sm:right-14 z-30 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-[#060b14]/90 border border-[#1c2e50]
+          rounded-lg text-[10px] sm:text-xs backdrop-blur-sm transition-all font-bold"
         style={{ color: '#00e5ff' }}
         title="Toggle Language"
       >
@@ -330,8 +330,8 @@ export const WebcamFeed = () => {
 
       {/* Safety status overlay */}
       {safetyStatus && isActive && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30
-          px-6 py-3 rounded-xl backdrop-blur-sm font-bold text-lg shadow-lg animate-pulse"
+        <div className="absolute top-12 sm:top-16 left-1/2 -translate-x-1/2 z-30
+          px-4 sm:px-6 py-2 sm:py-3 rounded-xl backdrop-blur-sm font-bold text-sm sm:text-lg shadow-lg animate-pulse"
           style={{
             backgroundColor: `${safetyStatus.color}20`,
             border: `2px solid ${safetyStatus.color}`,
@@ -346,8 +346,8 @@ export const WebcamFeed = () => {
 
       {/* Feedback overlay for exercises without angle */}
       {isActive && exerciseStateRef.current?.feedback && exerciseStateRef.current?.angle === 0 && !safetyStatus && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30
-          px-6 py-3 rounded-xl backdrop-blur-sm font-bold text-base shadow-lg"
+        <div className="absolute top-12 sm:top-16 left-1/2 -translate-x-1/2 z-30
+          px-4 sm:px-6 py-2 sm:py-3 rounded-xl backdrop-blur-sm font-bold text-xs sm:text-base shadow-lg"
           style={{
             backgroundColor: 'rgba(0, 229, 255, 0.1)',
             border: '2px solid #00e5ff',
@@ -359,16 +359,16 @@ export const WebcamFeed = () => {
 
       {/* Angle display */}
       {isActive && exerciseStateRef.current?.angle !== undefined && exerciseStateRef.current.angle > 0 && (
-        <div className="absolute bottom-16 left-4 z-30 bg-[#060b14]/90 border border-[#1c2e50]
-          rounded-xl p-3 backdrop-blur-sm">
-          <div className="text-xs text-[#4a5e80] mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-            CURRENT ANGLE
+        <div className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 z-30 bg-[#060b14]/90 border border-[#1c2e50]
+          rounded-xl p-2 sm:p-3 backdrop-blur-sm">
+          <div className="text-[10px] sm:text-xs text-[#4a5e80] mb-0.5 sm:mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            ANGLE
           </div>
-          <div className="text-3xl font-black text-[#00e5ff]" style={{ fontFamily: "'Syne', sans-serif" }}>
+          <div className="text-2xl sm:text-3xl font-black text-[#00e5ff]" style={{ fontFamily: "'Syne', sans-serif" }}>
             {exerciseStateRef.current.angle}°
           </div>
           {SAFETY_RULES[currentExercise] && (
-            <div className="text-xs text-[#4a5e80] mt-1">
+            <div className="text-[10px] sm:text-xs text-[#4a5e80] mt-0.5 sm:mt-1">
               Target: {SAFETY_RULES[currentExercise].ideal.min}°-{SAFETY_RULES[currentExercise].ideal.max}°
             </div>
           )}
@@ -379,7 +379,7 @@ export const WebcamFeed = () => {
       {[['top-3 left-3','border-t-2 border-l-2'],['top-3 right-3','border-t-2 border-r-2'],
         ['bottom-3 left-3','border-b-2 border-l-2'],['bottom-3 right-3','border-b-2 border-r-2']
       ].map(([pos, border]) => (
-        <div key={pos} className={`absolute ${pos} w-8 h-8 ${border} border-[#00e5ff]/40 z-20 pointer-events-none`} />
+        <div key={pos} className={`absolute ${pos} w-6 sm:w-8 h-6 sm:h-8 ${border} border-[#00e5ff]/40 z-20 pointer-events-none`} />
       ))}
 
       {/*
@@ -393,7 +393,7 @@ export const WebcamFeed = () => {
         playsInline
         muted
         className="w-full rounded-2xl border border-[#1c2e50] block bg-[#0d1526]"
-        style={{ transform: 'scaleX(-1)', minHeight: '320px' }}
+        style={{ transform: 'scaleX(-1)', minHeight: '240px' }}
       />
 
       {/* Canvas overlaid on top — same mirror transform */}
@@ -407,8 +407,8 @@ export const WebcamFeed = () => {
       {!videoReady && (
         <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center
           bg-[#060b14]/80 backdrop-blur-sm z-10 gap-3">
-          <div className="w-8 h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
-          <p className="text-[#00e5ff] text-sm animate-pulse" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="w-6 sm:w-8 h-6 sm:h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
+          <p className="text-[#00e5ff] text-xs sm:text-sm animate-pulse" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             STARTING CAMERA...
           </p>
         </div>
@@ -418,8 +418,8 @@ export const WebcamFeed = () => {
       {videoReady && !isReady && !isHandReady && (
         <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center
           bg-[#060b14]/70 backdrop-blur-sm z-10 gap-3">
-          <div className="w-8 h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
-          <p className="text-[#00e5ff] text-sm animate-pulse" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="w-6 sm:w-8 h-6 sm:h-8 border-2 border-[#1c2e50] border-t-[#00e5ff] rounded-full animate-spin" />
+          <p className="text-[#00e5ff] text-xs sm:text-sm animate-pulse" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             LOADING MODEL...
           </p>
         </div>
@@ -428,7 +428,7 @@ export const WebcamFeed = () => {
       {/* Error */}
       {(poseError || handError) && (
         <div className="absolute inset-0 rounded-2xl flex items-center justify-center bg-[#060b14]/80 z-10">
-          <p className="text-red-400 text-sm px-6 text-center">{poseError || handError}</p>
+          <p className="text-red-400 text-xs sm:text-sm px-4 sm:px-6 text-center">{poseError || handError}</p>
         </div>
       )}
     </div>
