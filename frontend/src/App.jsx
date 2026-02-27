@@ -84,38 +84,38 @@ function App() {
         }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
 
         {/* ── Header ── */}
-        <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <img src="/OrthoVita.png" alt="OrthoVita Logo" className="h-16 w-auto object-contain rounded-lg" />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <img src="/OrthoVita.png" alt="OrthoVita Logo" className="h-12 sm:h-16 w-auto object-contain rounded-lg" />
           <div>
-              <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
                 Ortho<span className="text-[#00e5ff]">Vita</span>
               </h1>
-              <p className="text-[#4a5e80] text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                AI-POWERED REHABILITATION • DAY {rehabDay}
+              <p className="text-[#4a5e80] text-xs sm:text-sm mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                AI-POWERED REHAB • DAY {rehabDay}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             <button
               onClick={() => setShowHistory(true)}
-              className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
+              className="text-xs sm:text-sm border border-[#1c2e50] text-[#00e5ff] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl
                 hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
             >
-              📊 History
+              📊 <span className="hidden sm:inline">History</span>
             </button>
             <button
               onClick={() => setShowNutrition(true)}
-              className="text-sm border border-[#1c2e50] text-[#00e5ff] px-4 py-2 rounded-xl
+              className="text-xs sm:text-sm border border-[#1c2e50] text-[#00e5ff] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl
                 hover:border-[#00e5ff]/50 hover:bg-[#00e5ff]/5 transition-all duration-200"
             >
-              🥗 Nutrition
+              🥗 <span className="hidden sm:inline">Nutrition</span>
             </button>
-            <div className="text-right">
+            <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-[#e8f0ff]">👋 {user.name}</p>
               {confirmedInjury && (
                 <p className="text-xs text-[#4a5e80]">{confirmedInjury}</p>
@@ -191,23 +191,23 @@ function App() {
         )}
 
         {/* ── Setup Guide ── */}
-        <div className="bg-[#0d1526] border border-[#00e5ff]/10 border-l-2 border-l-[#00e5ff] p-4 mb-6 rounded-xl">
-          <p className="font-semibold text-[#00e5ff] text-sm mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+        <div className="bg-[#0d1526] border border-[#00e5ff]/10 border-l-2 border-l-[#00e5ff] p-3 sm:p-4 mb-4 sm:mb-6 rounded-xl">
+          <p className="font-semibold text-[#00e5ff] text-xs sm:text-sm mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             📹 SETUP GUIDE
           </p>
-          <p className="text-[#6b7fa8] text-sm">
-            Stand 6–8 feet from camera &bull; Ensure full body is visible &bull; Good lighting required
+          <p className="text-[#6b7fa8] text-xs sm:text-sm">
+            Stand 6–8 feet from camera &bull; Full body visible &bull; Good lighting
           </p>
         </div>
 
         {/* ── Exercise Selection ── */}
         <ExerciseSelector recommendedExercises={recommendedExercises} />
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Webcam Feed */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" id="webcam-section">
             <WebcamFeed />
-            <div className="mt-4">
+            <div className="mt-3 sm:mt-4">
               <ControlButtons />
             </div>
           </div>
